@@ -1,0 +1,37 @@
+import os
+
+def lire_sequence(fichier):
+    os.chdir('test')
+    f = open(fichier,'r')
+    sequence = f.read()
+    L = sequence.splitlines()
+    if int(L[0]) < 100 and int(L[1]) < 100:
+        print(L[2])
+        print(L[3])
+    return sequence
+    f.close()
+
+def cout1(c1,c2,taille1,taille2,cout_gap,cout_dif,dico):
+    t1 = int(taille1)
+    t2 = int(taille2)
+    if int(t1) == 0:
+        return t2*cout_gap
+    if int(t2) == 0:
+        return t1*cout_gap
+    if t1 == t2:
+        if c1[t1] == c2[t2]:
+            ct = 0
+        else:
+            ct = cout_dif
+        return cout1(c1,c2,t1-1,t2-1,cout_gap,cout_dif,dico) + ct
+    if t1 < t2:
+        return cout1(c1,c2,t1,t2-1,cout_gap,cout_dif,dico) + cout_gap
+    else:
+        return cout1(c1,c2,t1-1,t2,cout_gap,cout_dif,dico) + cout_gap 
+    
+
+if __name__ == "__main__":
+    L = lire_sequence("Inst_0000010_44.adn")
+    dico = dict()
+    c = cout1(L[2],L[3],L[0],L[1],1,1,dico)
+    print(c)
