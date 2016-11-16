@@ -16,60 +16,26 @@ def lire_sequence(fichier):
     return L2
     f.close()
 
-def cout1bis(c1, c2, t1, t2, cout_gap, cout_dif, dico):
-    if t1 > t2:
-        for i in range(t2, t1):
-            c2 += '-'
-    else:
-        for i in range(t1, t2):
-            c1 += '-'
-
-    if c2[t2] == '-':
-        return cout1bis(c1, c2, t1-1, t2, cout_gap, cout_dif, dico) + cout_gap
-    if c1[t1] == '-':
-        return cout1bis(c1, c2, t1, t2-1, cout_gap, cout_dif, dico) + cout_gap
-    if c1[t1] != c2[t2]:
-        return cout1bis(c1, c2, t1-1, t2-1, cout_gap, cout_dif, dico) + cout_diff
-    else:
-        return cout1bis(c1, c2, t1-1, t2-1, cout_gap, cout_dif, dico)
-
+def cout(v1,v2,cout_dif):
+    if v1 != v2:
+        return cout_dif
+    return 0
     
 def cout1(c1,c2,t1,t2,cout_gap,cout_dif,dico):
-    if (t1,t2) in dico:
-        return dico[(t1,t2)]
-    if t1 < t2:
-        V = cout1(c1,c2,t1,t2-1,cout_gap,cout_dif,dico) + cout_gap
-        dico[(t1,t2)] = V
-        return V
-    
-    if t1 > t2:
-        V = cout1(c1,c2,t1-1,t2,cout_gap,cout_dif,dico) + cout_gap
-        dico[(t1,t2)] = V
-        return V
-    if t1 == 0 and t2 == 0:
-        if c1[t1] == c2[t2]:
-            ct = 0
-        else:
-            ct = cout_dif
-        return ct
-            
-    if t1 == 0:                 
+    if t1 == t2 and t1 == 0:
+        return cout(c1[t1],c2[t2],cout_dif)
+    if t1 == 0:
         return t2*cout_gap
     if t2 == 0:
         return t1*cout_gap
-    if t1 == t2:
-        if c1[t1] == c2[t2]:
-            ct = 0
-        else:
-            ct = cout_dif
-        V = cout1(c1,c2,t1-1,t2-1,cout_gap,cout_dif,dico) + ct
-        dico[(t1,t2)] = V    
-        return V
-
-    
+    #y a t-il une réutilisation de variable
+    dico[(t1,t2)] = min(cout1(c1,c2,t1-1,t2-1,1,1,dico) + cout(c1[t1],c2[t2],cout_dif),
+               cout1(c1,c2,t1,t2-1,1,1,dico) + cout_gap,
+               cout1(c1,c2,t1-1,t2,1,1,dico) + cout_gap)
+    return dico[(t1,t2)]
 
 if __name__ == "__main__":
     L = lire_sequence("Inst_0000010_44.adn")
     dico = dict()
-    c = cout1bis(L[2],L[3],L[0],L[1],1,1,dico)
+    c = cout1(L[2],L[3],L[0],L[1],1,1,dico)
     print(c)
