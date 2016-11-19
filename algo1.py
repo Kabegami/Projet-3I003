@@ -22,17 +22,6 @@ def cout(v1,v2,cout_dif):
     if v1 != v2:
         return cout_dif
     return 0
-    
-def cout1Naif(c1,c2,t1,t2,cout_gap,cout_dif,dico):
-    if t1 == t2 and t1 == 0:
-        return cout(c1[t1],c2[t2],cout_dif)
-    if t1 == 0:
-        return t2*cout_gap
-    if t2 == 0:
-        return t1*cout_gap #y a t-il une réutilisation de variable
-    return min(cout1Naif(c1,c2,t1-1,t2-1,cout_gap,cout_dif,dico) + cout(c1[t1],c2[t2],cout_dif),
-               cout1Naif(c1,c2,t1,t2-1,cout_gap,cout_dif,dico) + cout_gap,
-               cout1Naif(c1,c2,t1-1,t2,cout_gap,cout_dif,dico) + cout_gap)
 
 def cout1(c1,c2,t1,t2,cout_gap,cout_dif,dico):
     if (t1, t2) in dico:
@@ -53,70 +42,87 @@ def cout1(c1,c2,t1,t2,cout_gap,cout_dif,dico):
                cout1(c1,c2,t1-1,t2,cout_gap,cout_dif,dico) + cout_gap)
     #print (t1,t2), dico[(t1, t2)]
     return dico[(t1,t2)]
-        
+
+def cout_bottomUp(c1,c2,t1,t2,cout_gap,cout_dif,dico):
+    #cout ne marche pas DAFUCK
+    print(c1[0],c2[0])
+    v = cout(c1[0],c2[0],cout_dif)
+    dico[(0,0)] = cout(c1[0],c2[0],cout_dif)
+    dico[(1,0)] = 0
+    dico[(0,1)] = 0
+    i = 1
+    j = 1
+    cout = 0
+    while i != t1 or j != 2:
+        dico[(i,j)] = min(dico[(i-1,j-1)]+cout(c1[i],c2[i],cout_dif),
+                              dico[(i,j-1)] + cout_gap,
+                              dico[(i-1,j)] + cout_gap )
+        cout += dico[(i,j)]
+    return cout
+
+def descente(t1,t2,fils,dico,cout_diff):
+    i = t1
+    j = t2
+    L = []
+    while (i,j) in fils:
+        print("cout de ",fils[(i,j)]," : ", dico[fils[(i,j)]])
+        print("cout de ", (i,j), " : ", dico[(i,j)])
+        if dico[fils[(i,j)]] == dico[(i,j)] or dico[fils[(i,j)]] == dico[(i,j)] - cout_diff:
+            L.append((i,j))
+        c1 = fils[(i,j)][0]
+        c2 = fils[(i,j)][1]
+        #print("(i,j)",(i,j), "fils : ",(c1,c2))
+        print(L)
+        i = c1
+        j = c2
+    L.append((i,j))
+    return L
+    
+
 def sol1(t1,t2,cout_gap,cout_dif,dico):
+    print("dico : ",dico)
     L = []
     i = t1
     j = t2
-    cout = dico[(t1, t2)]
-    #print ("cout : ", cout)
-
-    # 1ere iteration pour initialiser la liste
-    if dico[i-1, j-1] <= dico[i, j-1] and dico[i-1, j-1] <= dico[i-1, j]:
-        #if dico[(i-1, j-1)] <= cout:
-        L.append((i-1, j-1))
-            #print ("J'ajoute", i-1, j-1, "vaut", dico[(i-1, j-1)])
-        i = i-1
-        j = j-1
-    elif dico[i, j-1] <= dico[i-1, j-1] and dico[i, j-1] <= dico[i-1, j]:
-        #if dico[(i, j-1)] <= cout:
-            #print ("J'ajoute", i, j-1, "vaut", dico[(i, j-1)])
-        L.append((i, j-1))
-        j = j-1
-    elif dico[i-1, j] <= dico[i-1, j-1] and dico[i-1, j] <= dico[i, j-1]:
-        #if dico[(i-1, j)] <= cout:
-            #print ("J'ajoute", i-1, j, "vaut", dico[(i-1, j)])
-        L.append((i-1, j))
-        i = i-1
-    
-
-    # on parcourt le dictionnaire et on prend le min
-    # prend (66,60) dans l'alignement alors qu'il ne devrait pas
-    # [..., (65, 59), (67, 61), ...]
-    # gerer le cas ou ils sont tous egaux...
+    fils = dict()
     
     while i > 0 and j > 0:
-        print ("(i, j) = ", i , j)
-        if dico[i-1, j-1] == dico[i, j-1] and dico[i, j-1] == dico[i-1, j]:
-            print ("i, j egaux", i, j)
+        if dico[i-1, j-1]+cout(i-1,j-1,cout_dif) <= dico[i, j-1] + cout_gap and dico[i-1, j-1]+cout(i-1,j-1,cout_dif) <= dico[i-1, j]+cout_gap:
+            fils[(i,j)] =(i-1,j-1)
             i = i-1
             j = j-1
-        elif dico[i-1, j-1] <= dico[i, j-1] and dico[i-1, j-1] <= dico[i-1, j]:
-            #if dico[(i-1, j-1)] <= cout:
-            L.append((i-1, j-1))
-            print ("J'ajoute", i-1, j-1, "vaut", dico[(i-1, j-1)])
-            i = i-1
+        elif dico[i, j-1] + cout_gap <= dico[i-1, j-1]+cout(i-1,j-1,cout_dif) and dico[i, j-1]+cout_gap <= dico[i-1, j]+cout_gap:
+            fils[(i,j)] = (i,j-1)
             j = j-1
-        elif dico[i, j-1] <= dico[i-1, j-1] and dico[i, j-1] <= dico[i-1, j]:
-            #if dico[(i, j-1)] <= cout:
-            if (j == L[-1][1]):
-                print ("J'enleve", L[-1] , "vaut", dico[L[-1]])
-                L.pop()
-                print ("J'ajoute", i, j-1, "vaut", dico[(i, j-1)])
-            L.append((i, j-1))
-            j = j-1
-        elif dico[i-1, j] <= dico[i-1, j-1] and dico[i-1, j] <= dico[i, j-1]:
-            #if dico[(i-1, j)] <= cout:
-            if (i == L[-1][0]):
-                print ("J'enleve", L[-1] , "vaut", dico[L[-1]])
-                L.pop()
-                print ("J'ajoute", i-1, j, "vaut", dico[(i-1, j)])
-            L.append((i-1, j))
+        elif dico[i-1, j]+cout_gap <= dico[i-1, j-1]+cout(i-1,j-1,cout_dif) and dico[i-1, j]+cout_gap <= dico[i, j-1]+cout_gap:
+            fils[(i,j)] = (i-1,j)
             i = i-1
-            
-        
+
+    print("fils : ",fils)
+    L = descente(t1,t2,fils,dico,cout_dif)
     L.reverse()
     return L
+
+
+
+def sol2(t1,t2,cout_gap,cout_dif,dico):
+    L = []
+    i = t1
+    j = t2
+    
+    while i > 0 and j > 0:
+        if dico[i-1, j-1] <= dico[i, j-1] and dico[i-1, j-1] <= dico[i-1, j]:
+            i = i-1
+            j = j-1
+            L.append((i,j))
+        elif dico[i, j-1] <= dico[i-1, j-1] and dico[i, j-1] <= dico[i-1, j]:
+            j = j-1
+        elif dico[i-1, j] <= dico[i-1, j-1] and dico[i-1, j] <= dico[i, j-1]:
+            i = i-1
+
+    print(L)
+    return L       
+
 
 
 def afficheAlignement(chaine1, chaine2, t1, t2, align):
@@ -181,23 +187,13 @@ if __name__ == "__main__":
     #L = lire_sequence("Inst_0000010_44.adn")
     L = lire_sequence("Inst_0000100_3.adn")
     dico = dict()
-    COUT_GAP = 1
+    COUT_GAP = 2
     COUT_DIFF = 1
     c = cout1(L[2],L[3],L[0],L[1],COUT_GAP,COUT_DIFF,dico)
     print(c)
-    #print L[0], L[1]
-    """
-    for i in dico:
-        if dico[i] <= 20:
-            print (i, dico[i])
-    """
-    print("\n")
-    
-    print (dico[67, 61])
-    print (dico[67, 60])
-    print (dico[66, 61])
-    print (dico[66, 60])
-    
+    #c2 = cout_bottomUp(L[2],L[3],L[0],L[1],COUT_GAP,COUT_DIFF,dico)
+    #print(c2)
+    print(dico)
     align = sol1(L[0],L[1],COUT_GAP,COUT_DIFF,dico)
     print ("------- Alignement M : -------")
     print (align)
