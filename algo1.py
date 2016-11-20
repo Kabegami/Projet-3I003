@@ -99,42 +99,23 @@ def descente(t1,t2,fils,dico,cout_diff,cout_gap):
     
 
 def sol1(t1,t2,cout_gap,cout_dif,dico):
-    #print("dico : ",dico)
     L = []
     i = t1
     j = t2
     
-    while i > 0 and j > 0:
-        if dico[i-1, j-1]+cout(i-1,j-1,cout_dif) <= dico[i, j-1] + cout_gap and dico[i-1, j-1]+cout(i-1,j-1,cout_dif) <= dico[i-1, j]+cout_gap:
-            L.append((i-1,j-1))
-            i = i-1
-            j = j-1
-        elif dico[i, j-1] + cout_gap <= dico[i-1, j-1]+cout(i-1,j-1,cout_dif) and dico[i, j-1]+cout_gap <= dico[i-1, j]+cout_gap:
-            j = j-1
-        elif dico[i-1, j]+cout_gap <= dico[i-1, j-1]+cout(i-1,j-1,cout_dif) and dico[i-1, j]+cout_gap <= dico[i, j-1]+cout_gap:
-            i = i-1
+    while (i,j) != (0,0):
+        print(dico[(i,j)],dico[(i-1,j-1)])
+        if dico[(i-1, j-1)] + cout(i,j,cout_dif) == dico[(i,j)]:
+            L.append((i,j))
+            (i,j) = (i-1,j-1)
+        else:
+            if dico[(i,j)] == dico[(i-1,j)] + cout_gap:
+                (i,j) = (i-1,j)
+            else:
+                (i,j) = (i,j-1)
     L.reverse()
     return L
-
-
-
-def sol2(t1,t2,cout_gap,cout_dif,dico):
-    L = []
-    i = t1
-    j = t2
-    
-    while i > 0 and j > 0:
-        if dico[i-1, j-1] <= dico[i, j-1] and dico[i-1, j-1] <= dico[i-1, j]:
-            i = i-1
-            j = j-1
-            L.append((i,j))
-        elif dico[i, j-1] <= dico[i-1, j-1] and dico[i, j-1] <= dico[i-1, j]:
-            j = j-1
-        elif dico[i-1, j] <= dico[i-1, j-1] and dico[i-1, j] <= dico[i, j-1]:
-            i = i-1
-
-    print(L)
-    return L       
+     
 
 
 
@@ -201,15 +182,13 @@ if __name__ == "__main__":
     #L = lire_sequence("Inst_0000100_3.adn")
     dico = dict()
     fils = dict()
+    #fils = dict()
     COUT_GAP = 1
     COUT_DIFF = 1
     #c = cout1(L[2],L[3],L[0],L[1],COUT_GAP,COUT_DIFF,dico)
     #print(c)
     c2 = cout2(L[2],L[3],L[0],L[1],COUT_GAP,COUT_DIFF,dico,fils)
-    print(c2)
-    #print("fils : ",fils)
     (des, inv) = descente(L[0],L[1],fils,dico,COUT_DIFF,COUT_GAP)
-    #print(dico)
     #align = sol1(L[0],L[1],COUT_GAP,COUT_DIFF,dico)
     print ("------- Alignement M : -------")
     #print ("sol 1 ",align)
@@ -217,6 +196,5 @@ if __name__ == "__main__":
     print("inverse : ",inv)
     print ("------------------------------")
     res = afficheAlignement(L[2], L[3], L[0], L[1], des)
-    print(fils[(3,1)])
-    print(coutAlign(res[0], res[1], COUT_GAP, COUT_DIFF))
+    #print(coutAlign(res[0], res[1], COUT_GAP, COUT_DIFF))
     

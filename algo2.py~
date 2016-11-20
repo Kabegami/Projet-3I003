@@ -1,0 +1,19 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+import os
+
+def lire_sequence(fichier):
+    os.chdir('test')
+    f = open(fichier,'r')
+    sequence = f.read()
+    L = sequence.splitlines()
+    L2 = []
+    L2.append(int(L[0])-1)
+    L2.append(int(L[1])-1)
+    L2.append(L[2].replace(" ",""))
+    L2.append(L[3].replace(" ",""))
+    if (L2[0]) < 100 and L2[1] < 100:
+        print(L2[2])
+        print(L2[3])
+    return L2
+    f.close()
