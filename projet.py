@@ -38,29 +38,74 @@ def cout1(x, y, gap=1,dif=1):
                           F[i, j-1] + gap)
     return F
 
+def cout2(x,y,gap=1,dif=1):
+    m,n = len(x),len(y)
+    F1 = np.zeros(m+1)
+    F2 = np.zeros(m+1)
+    L = []
+    i = 1
+    j = 1
+    while i < m and j < n:
+        d1 = F1[i-1] +delta(x[i-1],y[j-1],dif)
+        d2 = F2[i-1] + gap
+        d3 = F1[i] + gap
+
+        if d1 <= d2 and d1 <= d3:
+            F2[i] = d1
+            F1 = F2
+            i +=1
+            j += 1
+            
+        elif d2 <= d1 and d2 <= d3:
+            F2[i] = d2
+            F1 = F2
+            j += 1
+        else:
+            #on se deplace a droite poto
+            F2[i] = d3
+            i += 1
+
+    return F2
 
 def sol1(x, y, F, gap=1,dif=1):
     i, j = len(x), len(y)
     M = []
+    c1 = ""
+    c2 = ""
+    #print("F final :",F[len(x),len(y)])
+    v1 = F[len(x)-1,len(y)-1] + delta(x[len(x)-1],y[len(y)-1],dif)
+    v2 = F[len(x)-1,len(y)] + gap
+    v3 = F[len(x),len(y)-1] + gap
+    if dif <= dif:
+        M.append((len(x)+1,len(y)+1))
     while (i, j) != (0, 0):
         if i > 0 and j > 0 and F[i, j] == F[i-1, j-1] + delta(x[i-1], y[j-1],dif):
+            c1 += x[i-1]
+            c2 += y[j-1]
             M.append((i, j))
             i, j = i-1, j-1
         elif i > 0 and F[i, j] == F[i-1, j] + gap:
+            c2 += "-"
+            c1 += x[i-1]
             i -= 1
         else:
+            c1 += "-"
+            c2 += y[j-1]
             j -= 1
     M.reverse()
-    return M
+    print(c1[::-1])
+    print(c2[::-1])
+    return (M,c1,c2)
 
 
-def affiche(x, y, M,F,gap,dif):
+def affiche(x, y, M):
     #Quand on rajoute la paire (xn,ym) a notre allignement cela pose des problemes."
-    #if F[len(x),len(y)] + delta(x[len(x)-1],y[len(y)-1],dif) <= F[len(x)-1,len(y)-1] + gap:
-    M.append((len(x)+1, len(y)+1))
+    #M.append((len(x)+1, len(y)+1))
     i, j = 1, 1
     sx, sy = '', ''
-    print("M : ", M)
+    if M == []:
+        sx = max(len(x),len(y))*'-'
+        sy = max(len(x),len(y))*'-'
     for (u, v) in M:
         while i < u and j < v:
             sx = sx + x[i-1]
@@ -103,21 +148,24 @@ def coutAlign2(c1,c2,gap,dif):
     return cout
 
 
-# test
 if __name__ == "__main__":
-    L = lire_sequence("Inst_0000010_44.adn")
-     #L = lire_sequence("Inst_0000100_3.adn")
+    #L = lire_sequence("Inst_0000010_44.adn")
+    L = lire_sequence("Inst_0000100_3.adn")
     x = L[2]
     y = L[3]
     #x = "ATG"
     #y = "C"
     #l'algorithme marche quand COUT_GAP >= COUT_DIF mais pas l'inverse 
-    COUT_GAP = 2
-    COUT_DIF = 30
+    COUT_GAP = 5000
+    COUT_DIF = 50
     F = cout1(x,y,COUT_GAP,COUT_DIF)
     print('cout total :', F[len(x), len(y)])
+    print(F)
     
-    M = sol1(x, y, F,COUT_GAP,COUT_DIF)
-    print('alignements :', M)
-    (c1,c2) = affiche(x, y, M,F,COUT_GAP,COUT_DIF)
-    print("cout align : ", coutAlign2(c1,c2,COUT_GAP,COUT_DIF))
+    M,c1,c2 = sol1(x, y, F,COUT_GAP,COUT_DIF)
+    #print('alignements :', M)
+    #(c1,c2) = affiche(x, y, M)
+    print("cout align : ", coutAlign(c1,c2,COUT_GAP,COUT_DIF))
+    #F2 = cout2(x,y,COUT_GAP,COUT_DIF)
+    #print(F2)
+    #print(F2[len(x)])

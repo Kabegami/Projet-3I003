@@ -24,12 +24,12 @@ def cout(v1,v2,cout_dif):
     return 0
 
 def cout1(c1,c2,n,m,dif,gap,dico):
+    for i in range(-1,n+1):
+        dico[(i,-1)] = i*gap
+    for j in range(0,m+1):
+        dico[(-1,j)] = j*gap
     for i in range(0,n+1):
-        dico[(i,0)] = i*gap
-    for j in range(1,m+1):
-        dico[(0,j)] = j*gap
-    for i in range(1,n+1):
-        for j in range(1,m+1):
+        for j in range(0,m+1):
             dico[(i,j)] = min(dico[(i-1,j-1)]+cout(c1[i-1],c2[j-1],dif),
                             dico[(i-1,j)] + gap,
                             dico[(i,j-1)] + gap)
@@ -42,8 +42,8 @@ def sol1(c1,c2,n,m,cout_gap,cout_dif,dico):
     i = n
     j = m
     
-    while i!= 0 and j != 0:
-        if dico[(i,j)] == dico[(i-1, j-1)] + cout(c1[i-1],c2[j-1],cout_dif):
+    while i!= -1 and j != -1:
+        if dico[(i,j)] == dico[(i-1, j-1)] + cout(c1[i],c2[j],cout_dif):
             L.append((i,j))
             X += c1[i]
             Y += c2[j]
@@ -59,8 +59,8 @@ def sol1(c1,c2,n,m,cout_gap,cout_dif,dico):
                 (i,j) = (i,j-1)
     print((i,j))
     L.reverse()
-    print(X[::-1])
-    print(Y[::-1])
+    print(X)
+    print(Y)
     return (L)
 
 def Alignement(chaine1,chaine2,t1,t2,align):
@@ -157,5 +157,5 @@ if __name__ == "__main__":
     print("-------- Alignement--------")
     print(align)
     print("---------------------------")
-    res = Alignement(L[2], L[3], L[0], L[1], align)
+    res = afficheAlignement(L[2], L[3], L[0], L[1], align)
     print(coutAlign(res[0], res[1], COUT_GAP, COUT_DIFF))

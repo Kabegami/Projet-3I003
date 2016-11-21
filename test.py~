@@ -43,7 +43,7 @@ def sol1(c1,c2,n,m,cout_gap,cout_dif,dico):
     j = m
     
     while i!= 0 and j != 0:
-        if dico[(i,j)] == dico[(i-1, j-1)] + cout(c1[i-1],c2[j-1],cout_dif):
+        if dico[(i,j)] == dico[(i-1, j-1)] + cout(c1[i],c2[j],cout_dif):
             L.append((i,j))
             X += c1[i]
             Y += c2[j]
@@ -59,8 +59,8 @@ def sol1(c1,c2,n,m,cout_gap,cout_dif,dico):
                 (i,j) = (i,j-1)
     print((i,j))
     L.reverse()
-    print(X[::-1])
-    print(Y[::-1])
+    print(X)
+    print(Y)
     return (L)
 
 def Alignement(chaine1,chaine2,t1,t2,align):
