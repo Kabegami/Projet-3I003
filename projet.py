@@ -63,7 +63,7 @@ def cout2bis(x,y,k,l,gap = 1,dif = 1):
     v1 = 1
     for j in range(0,n+1):
         F1[j] = j*gap
-    for i in range(k+1,m+1):
+    for i in range(k,m+k):
         F2[0] = v1*gap
         for j in range(1,n+1):
             F2[j] = min(F1[j-1] + delta(x[i-1], y[j-1],dif),
@@ -159,8 +159,8 @@ if __name__ == "__main__":
     y = L[3]
     #x = "ATG"
     #y = "C"
-    t1="TATATGAGTC"
-    t2="TATTT"
+    t1="AGAGTC"
+    t2="T"
     #l'algorithme marche quand COUT_GAP >= COUT_DIF mais pas l'inverse 
     COUT_GAP = 1
     COUT_DIF = 1
@@ -176,7 +176,7 @@ if __name__ == "__main__":
     Vcout2 = cout2(x,y,COUT_GAP,COUT_DIF)
     print(Vcout2)
     print("appel de cout2bis")
-    Vcout2bis = cout2bis(x,y,0,0,COUT_GAP,COUT_DIF)
+    Vcout2bis = cout2bis(x,y,4,4,COUT_GAP,COUT_DIF)
     print(Vcout2bis)
     print("verification")
     verif = cout1(t1,t2,COUT_GAP,COUT_DIF)
