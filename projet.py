@@ -60,14 +60,14 @@ def cout2(x, y, gap=1,dif=1):
         
 def cout2bis(x,y,k,l,gap = 1,dif = 1):
     #on recrer les 2 tableaux a partir de la case i,j
-    m,n = len(x)-k, len(y)-l
+    m,n = len(x), len(y)-l
     F1 = np.zeros(n+1, dtype=int)  # ligne i-1
     F2 = np.zeros(n+1, dtype=int)  # ligne i
     v1 = 1
     for j in range(0,n+1):
         F1[j] = j*gap
     #Pour avoir 
-    for i in range(k,m+k):
+    for i in range(k,m):
         F2[0] = v1*gap
         for j in range(1,n+1):
             F2[j] = min(F1[j-1] + delta(x[i-1], y[j-1],dif),
@@ -193,7 +193,7 @@ if __name__ == "__main__":
     y = L[3]
     #x = "ATG"
     #y = "C"
-    t1="AGAGTC"
+    t1="TGAGTC"
     t2="T"
     COUT_GAP = 1
     COUT_DIF = 1
@@ -223,4 +223,4 @@ if __name__ == "__main__":
     Y2B = np.zeros(3)
     F2B = np.zeros((3,len(y)+1))
     L = []
-    test= SOL2(x,len(x),y,len(y),L,x,y)
+    #test= SOL2(x,len(x),y,len(y),L,x,y)
