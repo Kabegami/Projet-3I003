@@ -38,34 +38,98 @@ def cout1(x, y, gap=1,dif=1):
                           F[i, j-1] + gap)
     return F
 
-def cout2(x,y,gap=1,dif=1):
+def cout2(x,y,t1,t2,F1,F2,gap=1,dif=1):
+    if t1 in F1:
+        return F1[t1]
+    if t2 in F2:
+        return F2[t1]
+    if t1 == 0:
+        F2[t1] = t2*gap
+    if t2 == 0:
+        F1[t2] = t1 *gap
+
+    print("paire :",(t1,t2))
+    d1 = F1[t1-1] + delta(x[t1-1],y[t2-1],dif)
+    d2 = F2[t1-1] + gap
+    d3 = F1[t1] + gap
+    if d2 <= d1 and d2 <= d2:
+        #on prend la valeur a gauche de (i,j)
+        F2[t1] = d2
+        cout2(x,y,t1-1,t2,F1,F2,gap,dif)
+    elif d1 <= d2 and d1 <= d3:
+        #On prend la diagonale
+        F2[t1] = d1
+        print(F1)
+        F1 = F2
+        cout2(x,y,t1-1,t2-1,F1,F2,gap,dif)
+    elif d3 <= d2 and d3 <= d1:
+        #on prend la valeur du haut
+        F2[t1] = d1
+        print(F1)
+        F1 = F2
+        cout2(x,y,t1,t2-1,F1,F2,gap,dif)
+
+def cout2Bis(x,y,gap=1,dif=1):
     m,n = len(x),len(y)
-    F1 = np.zeros(m+1)
-    F2 = np.zeros(m+1)
-    L = []
+    F1 = np.zeros(n+1)
+    F2 = np.zeros(n+1)
+    for j in range(0,n+1):
+        F1[j] = j*gap
+    F1[0] = 0
     i = 1
     j = 1
     while i < m and j < n:
-        d1 = F1[i-1] +delta(x[i-1],y[j-1],dif)
-        d2 = F2[i-1] + gap
-        d3 = F1[i] + gap
+        F2[0] = (i-1)*gap
+        d1 = F1[j-1] +delta(x[i-1],y[j-1],dif)
+        d2 = F2[j-1] + gap
+        d3 = F1[j] + gap
 
         if d1 <= d2 and d1 <= d3:
-            F2[i] = d1
+            #pere : diagonale
+            F2[j] = d1
+            print(F1)
             F1 = F2
             i +=1
             j += 1
             
-        elif d2 <= d1 and d2 <= d3:
-            F2[i] = d2
+        elif d3 <= d1 and d3 <= d2:
+            #pere : haut
+            print(F1)
+            F2[j] = d3
             F1 = F2
-            j += 1
-        else:
-            #on se deplace a droite poto
-            F2[i] = d3
             i += 1
+        else:
+            #on prend la case de gauche comme pere
+            F2[j] = d2
+            j += 1
 
     return F2
+        
+def cout2III(x,y,gap=1,dif=1):
+    m,n = len(x),len(y)
+    F1 = np.zeros(n+1)
+    F2 = np.zeros(n+1)
+    for j in range(0,n+1):
+        F1[j] = j*gap
+    F1[0] = 0
+    i = 1
+    j = 1
+    while i < m:
+        F2[0] = i*gap
+        for j in range(0,n+1):
+            d1 = F1[j-1] +delta(x[i-1],y[j-1],dif)
+            d2 = F2[j-1] + gap
+            d3 = F1[j] + gap
+            F2[j] = min(d1,d2,d3)
+        print("-------------------")
+        print(F1)
+        print('')
+        print(F2)
+        F1 = F2
+        i += 1
+    return F2[n]        
+    
+        
 
 def sol1(x, y, F, gap=1,dif=1):
     i, j = len(x), len(y)
@@ -149,15 +213,15 @@ def coutAlign2(c1,c2,gap,dif):
 
 
 if __name__ == "__main__":
-    #L = lire_sequence("Inst_0000010_44.adn")
-    L = lire_sequence("Inst_0000100_3.adn")
+    L = lire_sequence("Inst_0000010_44.adn")
+    #L = lire_sequence("Inst_0000100_3.adn")
     x = L[2]
     y = L[3]
     #x = "ATG"
     #y = "C"
     #l'algorithme marche quand COUT_GAP >= COUT_DIF mais pas l'inverse 
-    COUT_GAP = 5000
-    COUT_DIF = 50
+    COUT_GAP = 1
+    COUT_DIF = 1
     F = cout1(x,y,COUT_GAP,COUT_DIF)
     print('cout total :', F[len(x), len(y)])
     print(F)
@@ -166,6 +230,7 @@ if __name__ == "__main__":
     #print('alignements :', M)
     #(c1,c2) = affiche(x, y, M)
     print("cout align : ", coutAlign(c1,c2,COUT_GAP,COUT_DIF))
-    #F2 = cout2(x,y,COUT_GAP,COUT_DIF)
-    #print(F2)
-    #print(F2[len(x)])
+    print("appel de cout2bis")
+    cout2 = cout2III(x,y,COUT_GAP,COUT_DIF)
+    print(cout2)
+    print(cout2[len(x)])
