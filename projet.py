@@ -50,36 +50,30 @@ def cout2(x, y, gap=1,dif=1):
             F2[j] = min(F1[j-1] + delta(x[i-1], y[j-1],dif),
                         F1[j] + gap,
                         F2[j-1] + gap)
-        print(F1)
+        #print(F1)
         F1[:] = F2[:]  # copie de F2 dans F1
     return F2[n]
 
 
         
-def cout2III(x,y,gap=1,dif=1):
-    m,n = len(x),len(y)
-    F1 = np.zeros(n+1)
-    F2 = np.zeros(n+1)
+def cout2bis(x,y,k,l,gap = 1,dif = 1):
+    m,n = len(x)-k, len(y)-l
+    F1 = np.zeros(n+1, dtype=int)  # ligne i-1
+    F2 = np.zeros(n+1, dtype=int)  # ligne i
+    v1 = 1
     for j in range(0,n+1):
         F1[j] = j*gap
-    F1[0] = 0
-    i = 1
-    j = 1
-    while i < m:
-        F2[0] = i*gap
-        for j in range(0,n+1):
-            d1 = F1[j-1] +delta(x[i-1],y[j-1],dif)
-            d2 = F2[j-1] + gap
-            d3 = F1[j] + gap
-            F2[j] = min(d1,d2,d3)
-        print("-------------------")
+    for i in range(k+1,m+1):
+        F2[0] = v1*gap
+        for j in range(1,n+1):
+            F2[j] = min(F1[j-1] + delta(x[i-1], y[j-1],dif),
+                        F1[j] + gap,
+                        F2[j-1] + gap)
         print(F1)
-        print('')
-        print(F2)
-        F1 = F2
-        i += 1
-    return F2[n]        
-    
+        F1[:] = F2[:]  # copie de F2 dans F1
+        v1 += 1
+    print(F2)
+    return F2[n]
         
 
 def sol1(x, y, F, gap=1,dif=1):
@@ -87,12 +81,7 @@ def sol1(x, y, F, gap=1,dif=1):
     M = []
     c1 = ""
     c2 = ""
-    #print("F final :",F[len(x),len(y)])
-    v1 = F[len(x)-1,len(y)-1] + delta(x[len(x)-1],y[len(y)-1],dif)
-    v2 = F[len(x)-1,len(y)] + gap
-    v3 = F[len(x),len(y)-1] + gap
-    if dif <= dif:
-        M.append((len(x)+1,len(y)+1))
+    M.append((len(x)+1,len(y)+1))
     while (i, j) != (0, 0):
         if i > 0 and j > 0 and F[i, j] == F[i-1, j-1] + delta(x[i-1], y[j-1],dif):
             c1 += x[i-1]
@@ -170,6 +159,8 @@ if __name__ == "__main__":
     y = L[3]
     #x = "ATG"
     #y = "C"
+    t1="TATATGAGTC"
+    t2="TATTT"
     #l'algorithme marche quand COUT_GAP >= COUT_DIF mais pas l'inverse 
     COUT_GAP = 1
     COUT_DIF = 1
@@ -181,6 +172,13 @@ if __name__ == "__main__":
     #print('alignements :', M)
     #(c1,c2) = affiche(x, y, M)
     print("cout align : ", coutAlign(c1,c2,COUT_GAP,COUT_DIF))
-    print("appel de cout2x")
-    cout2 = cout2(x,y,COUT_GAP,COUT_DIF)
-    print(cout2)
+    print("appel de cout2")
+    Vcout2 = cout2(x,y,COUT_GAP,COUT_DIF)
+    print(Vcout2)
+    print("appel de cout2bis")
+    Vcout2bis = cout2bis(x,y,0,0,COUT_GAP,COUT_DIF)
+    print(Vcout2bis)
+    print("verification")
+    verif = cout1(t1,t2,COUT_GAP,COUT_DIF)
+    print(verif)
+    print(verif[len(t1),len(t2)])
