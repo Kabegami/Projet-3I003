@@ -1,0 +1,9 @@
+plot "COUT2" with lines
+set term png
+set output "COUT2_courbe"
+set size 1, 1
+set xlabel ' Longueur de séquence (caractères)'
+set ylabel ' Temps (s) '
+set title 'Complexité temporelle en fonction de la longueur'
+set key on inside left top
+replot
